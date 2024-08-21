@@ -11,7 +11,9 @@
     <div class="w-full max-w-md bg-white p-6 rounded-lg shadow-md">
         <h1 class="text-2xl font-semibold mb-4">Upload Image for Prediction</h1>
         <form id="uploadForm" enctype="multipart/form-data">
-            <input type="file" name="image" id="image" class="mb-4 p-2 border border-gray-300 rounded w-full" required>
+            <input type="file" name="image" id="image" 
+                   accept="image/png, image/jpeg" 
+                   class="mb-4 p-2 border border-gray-300 rounded w-full" required>
             <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Upload</button>
         </form>
         <div id="result" class="mt-4"></div>
@@ -21,6 +23,22 @@
         $(document).ready(function() {
             $('#uploadForm').on('submit', function(event) {
                 event.preventDefault();
+                var fileInput = $('#image')[0];
+                var file = fileInput.files[0];
+
+                // Check if a file is selected
+                if (!file) {
+                    $('#result').html('<p class="text-red-500">No file selected.</p>');
+                    return;
+                }
+
+                // Check file type
+                var allowedTypes = ['image/png', 'image/jpeg'];
+                if (!allowedTypes.includes(file.type)) {
+                    $('#result').html('<p class="text-red-500">Invalid file type. Only PNG, JPG, and JPEG are allowed.</p>');
+                    return;
+                }
+
                 var formData = new FormData(this);
                 $.ajax({
                     url: '/predict',
