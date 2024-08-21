@@ -9,7 +9,7 @@ from cnn_model import load_model
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Load the trained model
-model_path = "./MINST_saved_model.pth"
+model_path = "../MINST_saved_model.pth"
 model, optimizer = load_model(model_path, device)
 
 # Define your Flask app
@@ -29,14 +29,25 @@ def preprocess_image(image):
 def index():
     return render_template("index.html")
 
+# Allowed extensions
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 # Route for predictions
 @app.route("/predict", methods=["POST"])
 def predict():
     if "image" not in request.files:
         return jsonify({"error": "No image provided"}), 400
 
-    image_file = request.files["image"].read()
-    image = Image.open(io.BytesIO(image_file)).convert("L")  # Convert to grayscale
+    image_file = request.files["image"]
+    
+    # Check if the file has an allowed extension
+    if not allowed_file(image_file.filename):
+        return jsonify({"error": "Invalid file type. Only PNG, JPG, and JPEG are allowed."}), 400
+
+    image = Image.open(io.BytesIO(image_file.read())).convert("L")  # Convert to grayscale
 
     # Preprocess the image for model input
     image_tensor = preprocess_image(image)
