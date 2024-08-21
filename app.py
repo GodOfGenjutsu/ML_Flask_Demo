@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from PIL import Image
 import torch
 import torchvision.transforms as transforms
@@ -24,10 +24,10 @@ def preprocess_image(image):
     ])
     return transform(image).unsqueeze(0).to(device)  # Add batch dimension and move to device
 
-# Test route to check if the server is running
-@app.route("/a", methods=["GET"])
-def check_status():
-    return jsonify({"status": "Running"})
+# Home route serving the HTML page
+@app.route("/", methods=["GET"])
+def index():
+    return render_template("index.html")
 
 # Route for predictions
 @app.route("/predict", methods=["POST"])
@@ -35,9 +35,6 @@ def predict():
     if "image" not in request.files:
         return jsonify({"error": "No image provided"}), 400
 
-    print("Image is Received")
-
-    # Read and preprocess the image
     image_file = request.files["image"].read()
     image = Image.open(io.BytesIO(image_file)).convert("L")  # Convert to grayscale
 
@@ -51,7 +48,5 @@ def predict():
 
     return jsonify({"prediction": predicted.item()})
 
-# Run the Flask app
 if __name__ == "__main__":
-    # to buind all interface with this running server
     app.run(debug=True, host="0.0.0.0", port=3050)
