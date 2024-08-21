@@ -1,6 +1,6 @@
-torch==2.3.1+cu121
-torchaudio==2.3.1+cu121
-torchvision==0.18.1+cu121
+torch
+torchaudio
+torchvision
 numpy==1.26.3
 pandas==2.2.0
 Flask==3.0.3
