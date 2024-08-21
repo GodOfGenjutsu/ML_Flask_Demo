@@ -9,7 +9,7 @@ from cnn_model import load_model
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Load the trained model
-model_path = "../MINST_saved_model.pth"
+model_path = "./MINST_saved_model.pth"
 model, optimizer = load_model(model_path, device)
 
 # Define your Flask app
