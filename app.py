@@ -23,7 +23,10 @@ def preprocess_image(image):
         transforms.Normalize((0.5,), (0.5,))  # Standardize
     ])
     return transform(image).unsqueeze(0).to(device)  # Add batch dimension and move to device
-
+#model status routes
+@app.route("/status",methods=["GET"])
+def m_status():
+    return jsonify({"hello":"hello"}),200
 # Home route serving the HTML page
 @app.route("/", methods=["GET"])
 def index():
